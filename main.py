@@ -18,7 +18,7 @@ import seaborn as sns
 from collections import Counter
 from sklearn import preprocessing
 from sklearn import datasets
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import silhouette_samples
 from sklearn.decomposition import PCA
@@ -28,6 +28,7 @@ import sklearn.mixture as mixture
 import scipy.cluster.hierarchy as sch
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 from clean import *
+import matplotlib.cm as cm
 # movies = pd.read_csv('movies.csv', encoding='unicode_escape')
 movies = pd.read_csv('movies.csv', encoding='latin1', engine='python')
 
@@ -146,5 +147,99 @@ ax.set_title('Clusters de peliculas', fontsize = 20)
 
 color_theme = np.array(['red', 'green', 'blue', 'yellow','black'])
 ax.scatter(x = pca_clust_movies.PC1, y = pca_clust_movies.PC2, s = 50, c = labels)
+
+plt.show()'''
+
+'''#KMEANS Siuellete
+clusterer = KMeans(n_clusters=3, random_state=10)
+cluster_labels = clusterer.fit_predict(movies_df_clean)
+movies_df_clean['cluster Kmeans'] = cluster_labels
+
+pca = PCA(2)
+pca_movies = pca.fit_transform(movies_df_clean)
+pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
+pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster Kmeans']]], axis = 1)'''
+
+'''#Mixtures of Gaussians Siuellete
+gaussian_movies = mixture.GaussianMixture(n_components=3).fit(movies_df_clean)
+cluster_labels = gaussian_movies.predict(movies_df_clean)
+movies_df_clean['cluster gaussian'] = cluster_labels
+pca = PCA(2)
+pca_movies = pca.fit_transform(movies_df_clean)
+pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
+pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster gaussian']]], axis = 1)'''
+
+'''#Jerarquico Siuellete
+hc = AgglomerativeClustering(n_clusters=3,affinity='euclidean',linkage='ward')
+cluster_labels = hc.fit_predict(movies_df_clean)
+movies_df_clean['cluster jerarquico'] = cluster_labels
+
+
+pca = PCA(2)
+pca_movies = pca.fit_transform(movies_df_clean)
+pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
+pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster jerarquico']]], axis = 1)
+'''
+'''#Silueta
+
+# The silhouette_score gives the average value for all the samples.
+# This gives a perspective into the density and separation of the formed
+# clusters
+silhouette_avg = silhouette_score(movies_df_clean, cluster_labels)
+print("For clusters =", 3, "The average silhouette_score is :", silhouette_avg)
+
+# Compute the silhouette scores for each sample
+sample_silhouette_values = silhouette_samples(movies_df_clean, cluster_labels)
+
+
+
+fig, (ax) = plt.subplots(1)
+fig.set_size_inches(18, 7)
+
+# The 1st subplot is the silhouette plot
+# The silhouette coefficient can range from -1, 1 but in this example all
+# lie within [-0.1, 1]
+ax.set_xlim([-0.1, 1])
+# The (n_clusters+1)*10 is for inserting blank space between silhouette
+# plots of individual clusters, to demarcate them clearly.
+ax.set_ylim([0, len(pca_clust_movies) + (3 + 1) * 10])
+ax.scatter(x = pca_clust_movies.PC1, y = pca_clust_movies.PC2, marker="$%d$" % 3, alpha=1, s=50, edgecolor="k")
+
+y_lower = 10
+for i in range(3):
+    # Aggregate the silhouette scores for samples belonging to
+    # cluster i, and sort them
+    ith_cluster_silhouette_values = sample_silhouette_values[cluster_labels == i]
+
+    ith_cluster_silhouette_values.sort()
+
+    size_cluster_i = ith_cluster_silhouette_values.shape[0]
+    y_upper = y_lower + size_cluster_i
+
+    color = cm.nipy_spectral(float(i) / 3)
+    ax.fill_betweenx(
+        np.arange(y_lower, y_upper),
+        0,
+        ith_cluster_silhouette_values,
+        facecolor=color,
+        edgecolor=color,
+        alpha=0.7,
+    )
+
+    # Label the silhouette plots with their cluster numbers at the middle
+    ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+
+    # Compute the new y_lower for next plot
+    y_lower = y_upper + 10  # 10 for the 0 samples
+
+ax.set_title("The silhouette plot for 3 clusters.")
+ax.set_xlabel("The silhouette coefficient values")
+ax.set_ylabel("Cluster label")
+
+# The vertical line for average silhouette score of all the values
+ax.axvline(x=silhouette_avg, color="red", linestyle="--")
+
+ax.set_yticks([])  # Clear the yaxis labels / ticks
+ax.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
 
 plt.show()'''
