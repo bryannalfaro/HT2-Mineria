@@ -32,7 +32,7 @@ import matplotlib.cm as cm
 # movies = pd.read_csv('movies.csv', encoding='unicode_escape')
 movies = pd.read_csv('movies.csv', encoding='latin1', engine='python')
 
-'''movies_clean = movies[['popularity', 'budget', 'revenue', 'runtime','genresAmount','productionCoAmount','productionCountriesAmount','releaseDate','voteAvg','voteCount','actorsPopularity','actorsAmount','castWomenAmount','castMenAmount']]
+movies_clean = movies[['popularity', 'budget', 'revenue', 'runtime','genresAmount','productionCoAmount','productionCountriesAmount','releaseDate','voteAvg','voteCount','actorsPopularity','actorsAmount','castWomenAmount','castMenAmount']]
 
 #preprocesamiento
 movies_clean['castMenAmount']=clean_numeric_data(movies_clean["castMenAmount"], True, 313, keep_size=True)["Item"]
@@ -44,7 +44,7 @@ plt.figure(figsize=(16,10))
 sns.heatmap(mat_correlation,annot=True,cmap='BrBG')
 plt.title('Matriz de correlaciones  para la base Movies')
 plt.tight_layout()
-plt.show()'''
+plt.show()
 
 
 
@@ -67,7 +67,7 @@ movies_df_clean = movies_clean_norm.fillna(0)
 
 #print(movies_df_clean.describe())
 
-'''#Analisis de tendencia a agrupamiento
+#Analisis de tendencia a agrupamiento
 
 #Metodo Hopkings
 
@@ -75,7 +75,7 @@ random.seed(200)
 print(pyclustertend.hopkins(movies_df_clean, len(movies_df_clean)))
 
 #Grafico VAT e iVAT
-x = movies_df_clean.sample(frac=0.1)
+x = movies_df_clean.sample(frac=0.1) # 0.5 para el 50% de los datos como se mostró en el documento
 pyclustertend.vat(x)
 plt.show()
 pyclustertend.ivat(x)
@@ -91,9 +91,9 @@ plt.plot(range(1, 11), wcss)
 plt.title('Grafico de codo')
 plt.xlabel('No. Clusters')
 plt.ylabel('Puntaje')
-plt.show()'''
+plt.show()
 
-'''
+
 #Kmeans
 clusters=  KMeans(n_clusters=3, max_iter=300) #Creacion del modelo
 clusters.fit(movies_df_clean) #Aplicacion del modelo de cluster
@@ -127,9 +127,9 @@ print(clusters_df[clusters_df.cluster == 0].describe())
 print(clusters_df[clusters_df.cluster == 1])
 print(clusters_df[clusters_df.cluster == 1].describe())
 print(clusters_df[clusters_df.cluster == 2])
-print(clusters_df[clusters_df.cluster == 2].describe())'''
+print(clusters_df[clusters_df.cluster == 2].describe())
 
-'''#Jerarquico
+#Jerarquico
 movies_jerarquico = linkage(movies_df_clean,'ward')
 #dendograma = sch.dendrogram(movies_jerarquico)
 #plt.show()
@@ -137,9 +137,9 @@ movies_jerarquico = linkage(movies_df_clean,'ward')
 clusters = fcluster(movies_jerarquico, 10, criterion='distance')
 movies_df_clean['cluster jerarquico'] = clusters
 print(clusters)
-print(movies_df_clean)'''
+print(movies_df_clean)
 
-'''#Mixtures of Gaussians
+#Mixtures of Gaussians
 gaussian_movies = mixture.GaussianMixture(n_components=3).fit(movies_df_clean)
 labels = gaussian_movies.predict(movies_df_clean)
 movies_df_clean['cluster gaussian'] = labels
@@ -158,9 +158,9 @@ ax.set_title('Clusters de peliculas', fontsize = 20)
 color_theme = np.array(['red', 'green', 'blue', 'yellow','black'])
 ax.scatter(x = pca_clust_movies.PC1, y = pca_clust_movies.PC2, s = 50, c = labels)
 
-plt.show()'''
+plt.show()
 
-'''#KMEANS Siuellete
+#KMEANS Siuellete
 clusterer = KMeans(n_clusters=3, random_state=10)
 cluster_labels = clusterer.fit_predict(movies_df_clean)
 movies_df_clean['cluster Kmeans'] = cluster_labels
@@ -168,18 +168,18 @@ movies_df_clean['cluster Kmeans'] = cluster_labels
 pca = PCA(2)
 pca_movies = pca.fit_transform(movies_df_clean)
 pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
-pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster Kmeans']]], axis = 1)'''
+pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster Kmeans']]], axis = 1)
 
-'''#Mixtures of Gaussians Siuellete
+#Mixtures of Gaussians Siuellete
 gaussian_movies = mixture.GaussianMixture(n_components=3).fit(movies_df_clean)
 cluster_labels = gaussian_movies.predict(movies_df_clean)
 movies_df_clean['cluster gaussian'] = cluster_labels
 pca = PCA(2)
 pca_movies = pca.fit_transform(movies_df_clean)
 pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
-pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster gaussian']]], axis = 1)'''
+pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster gaussian']]], axis = 1)
 
-'''#Jerarquico Siuellete
+#Jerarquico Siuellete
 hc = AgglomerativeClustering(n_clusters=3,affinity='euclidean',linkage='ward')
 cluster_labels = hc.fit_predict(movies_df_clean)
 movies_df_clean['cluster jerarquico'] = cluster_labels
@@ -189,8 +189,8 @@ pca = PCA(2)
 pca_movies = pca.fit_transform(movies_df_clean)
 pca_movies_df = pd.DataFrame(data = pca_movies, columns = ['PC1', 'PC2'])
 pca_clust_movies = pd.concat([pca_movies_df, movies_df_clean[['cluster jerarquico']]], axis = 1)
-'''
-'''#Silueta
+
+#Silueta
 
 # The silhouette_score gives the average value for all the samples.
 # This gives a perspective into the density and separation of the formed
@@ -252,4 +252,4 @@ ax.axvline(x=silhouette_avg, color="red", linestyle="--")
 ax.set_yticks([])  # Clear the yaxis labels / ticks
 ax.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
 
-plt.show()'''
+plt.show()
