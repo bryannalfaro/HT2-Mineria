@@ -29,7 +29,7 @@ import scipy.cluster.hierarchy as sch
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 from clean import *
 import matplotlib.cm as cm
-# movies = pd.read_csv('movies.csv', encoding='unicode_escape')
+
 movies = pd.read_csv('movies.csv', encoding='latin1', engine='python')
 
 movies_clean = movies[['popularity', 'budget', 'revenue', 'runtime','genresAmount','productionCoAmount','productionCountriesAmount','releaseDate','voteAvg','voteCount','actorsPopularity','actorsAmount','castWomenAmount','castMenAmount']]
@@ -131,6 +131,8 @@ print(clusters_df[clusters_df.cluster == 2].describe())
 
 #Jerarquico
 movies_jerarquico = linkage(movies_df_clean,'ward')
+
+# NOTA: DENDOGRAMA COMENTADO - TARDA EN EJECUTARSE
 #dendograma = sch.dendrogram(movies_jerarquico)
 #plt.show()
 
