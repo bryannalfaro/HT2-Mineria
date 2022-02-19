@@ -116,8 +116,18 @@ color_theme = np.array(['red', 'green', 'blue', 'yellow','black'])
 ax.scatter(x = pca_clust_movies.PC1, y = pca_clust_movies.PC2, s = 50, c = color_theme[pca_clust_movies.cluster])
 
 plt.show()
-print(pca_clust_movies)'''
 
+# Datos individuales de cada cluster
+clusters_df = pd.DataFrame()
+clusters_df = movies_clean
+clusters_df['cluster'] = clusters.labels_
+pd.set_option('display.max_rows', 500)
+print(clusters_df[clusters_df.cluster == 0])
+print(clusters_df[clusters_df.cluster == 0].describe())
+print(clusters_df[clusters_df.cluster == 1])
+print(clusters_df[clusters_df.cluster == 1].describe())
+print(clusters_df[clusters_df.cluster == 2])
+print(clusters_df[clusters_df.cluster == 2].describe())'''
 
 '''#Jerarquico
 movies_jerarquico = linkage(movies_df_clean,'ward')
